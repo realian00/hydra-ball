@@ -1,0 +1,65 @@
+
+
+
+body {
+    background-color: black;
+    text-align: center;
+    /* height: 100vh; */
+    margin: 0px;
+    padding: 0px;
+}
+
+h1, h2, h3, h4 {
+    color: red;
+    padding: 10px;
+}
+
+.titleContainer {
+    display: flex;
+}
+
+@keyframes shadow {
+    from {text-shadow: #FFF 0px 0px 5px, #FFF 0px 0px 10px, #FFF 0px 0px 15px, #FF2D95 0px 0px 20px, #FF2D95 0px 0px 30px, #FF2D95 0px 0px 40px, #FF2D95 0px 0px 50px, #FF2D95 0px 0px 75px, -15px -12px 3px rgba(0,0,0,0);}
+    to {text-shadow: 0px 0px 0px;}
+}
+
+h1 {
+    margin-right: 0px;
+    margin-left: auto;
+    margin-top: 0px;
+    animation-name: shadow;
+    animation-duration: 2s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+}
+
+#difficulty {
+    margin: 50px auto;
+    width: 100%;
+}
+
+.bottom {
+    height: 50vh;
+}
+
+.circle {
+    position: fixed;
+    /* bottom: 80vh;
+    right: 10vh;
+
+
+    width: 20px;
+    height: 20px; */
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
+    background: red;
+  }
+
+  .gameWindow {
+      height: 100%;
+  }
+
+  canvas {
+      border: 2px solid white;
+  }
