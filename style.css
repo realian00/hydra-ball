@@ -63,3 +63,19 @@ h1 {
   canvas {
       border: 2px solid white;
   }
+
+  .top {
+      display: flex;
+  }
+
+  h4 {
+      margin-left: auto;
+      margin-right: auto;
+  }
+
+  #start {
+      position: absolute;
+      right: 50%;
+      bottom: 50%;
+      margin: auto;
+  }

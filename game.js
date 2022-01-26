@@ -1,60 +1,4 @@
 
-// let randomNumber = (min, max) => {
-//     return Math.floor(Math.random() * (max - min) ) + min
-// }
-
-
-// let createBall = () => {
-
-//     let divWidth = document.querySelector('.gameWindow').offsetWidth
-//     let divHeight = document.querySelector('.gameWindow').offsetHeight
-//     let divContainer = document.querySelector('.gameWindow')
-
-//     let horizontal = randomNumber(0, divWidth)
-//     let vertical = randomNumber(0, divHeight)
-//     let size = randomNumber(10, 30)
-
-//     let newBall = document.createElement('div')
-//     newBall.classList.add('circle')
-//     newBall.style.right = horizontal + 'px'   
-//     newBall.style.bottom = vertical + 'px'
-//     newBall.style.width = size + 'px'
-//     newBall.style.height = size + 'px'
-
-//     divContainer.appendChild(newBall)
-// }
-
-
-// let test = () => {
-//     let circle = document.getElementsByClassName('circle')[0]
-//     let container = document.getElementsByClassName('gameWindow')
-//     let positionX = circle.style.right.slice(0, -2)
-//     let positionY = circle.style.bottom.slice(0, -2)
-
-//     if (positionX < container.offsetWidth) {
-//         circle.style.right = (Number(positionX) + 1) + 'px'
-//     } else {
-//         circle.style.right = (Number(positionX) - 1) + 'px'
-//     }
-
-
-
-
-
-
-//     // circle.style.bottom = (Number(positionY) + 1) + 'px'
-// }
-
-
-// let a = () => {
-// let interval = setInterval(test, 2)}
-
-
-
-
-
-
-
 
 // setup canvas
 
@@ -62,6 +6,7 @@ const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d'); //defino 'ctx' como a area do canvas que posso desenhar em 2d
 const h4 = document.querySelector('h4')
 const container = document.querySelector('.gameWindow')
+const startBtn = document.querySelector('#start')
 
 const width = canvas.width = container.offsetWidth - 10;
 const height = canvas.height = window.innerHeight - h4.offsetHeight - 70;
@@ -119,80 +64,153 @@ Ball.prototype.update = function () {
     this.y += this.velY
 }
 
-//collision detection
 
-Ball.prototype.collisionDetect = function () {
-    for (let j = 0; j < balls.length; j++) {
-        if (!(this === balls[j])) {
-            const dx = this.x - balls[j].x
-            const dy = this.y - balls[j].y
-            const distance = Math.sqrt(dx * dx + dy * dy)
 
-            if (distance < this.size + balls[j].size) {
-                // balls[j].color = this.color = 'rgb(' + random(0, 255) + ',' + random(0, 255) + ',' + random(0, 255) +')'
-            }
+const actual = {
+    ballQty: 6,
+    speed: 4,
+    totalTime: 21,
+    timeout: 4000
+}
+
+const balls = []
+const timeoutArray = []
+
+
+let decreaseBallQty = () => {
+    if (actual.ballQty > 0) {
+        actual.ballQty -= 1
+    }
+}
+
+let increaseBallQty = () => {
+    actual.ballQty += 1
+    createBall()
+    startBallTimer()
+}
+
+
+let createBall = () => {
+    if (balls.length === 0 && actual.ballQty > 0) {
+        let size = random(10, 20)
+        let ball = new Ball(
+            random(size, width - size),
+            random(size, height - size),
+            random(actual.speed * -1, actual.speed),
+            random(actual.speed * -1, actual.speed), 
+            'red', 
+            size
+        )
+        balls.push(ball)
+    }
+    while (balls.length < actual.ballQty) {
+        let size = random(10, 20)
+        let ball = new Ball(
+            random(size, width - size),
+            random(size, height - size),
+            random(actual.speed * -1, actual.speed),
+            random(actual.speed * -1, actual.speed),
+            'rgb' + '(' + random(0, 220) + ',' + random(0, 255) + ',' + random(0, 255) + ')',
+            size
+        )
+        balls.push(ball)
+    }
+    ballsLeft()
+}
+
+
+
+
+let removeBall = () => {
+    removeBallTimer()
+    decreaseBallQty()
+    balls.splice(0, balls.length)
+    startBallTimer()
+    return createBall()
+}
+
+let startBallTimer = () => {
+    const timer = setTimeout(increaseBallQty, actual.timeout)
+    timeoutArray.push(timer)
+}
+
+
+// clear running timeouts. Starts from 2, because the timeout id#1 is always the total timer
+let removeBallTimer = () => {
+    for (i = 2; i < timeoutArray.length + 2; i++) {
+        clearTimeout(i)
+    }
+}
+
+
+
+let ballsLeft = () => {
+    let remainingBalls = actual.ballQty
+    let text = document.querySelector('#ballqty')
+    text.innerText = 'Current: ' + remainingBalls
+
+    if (remainingBalls === 0) {
+        removeBallTimer()
+        alert('winner')
+    }
+}
+
+
+
+let totalTimer = () => {
+    if (actual.totalTime > 0 && actual.ballQty > 0) {
+        actual.totalTime--
+        let timerText = document.querySelector('#timeleft')
+        timerText.innerText = 'Actual: ' + actual.totalTime
+    } 
+}
+
+totalTimer()
+ballsLeft()
+
+
+function loop() {
+
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.13)' //set the color to transparent
+    ctx.fillRect(0, 0, width, height) // make the canvas 
+
+    for (let i = 0; i < balls.length; i++) {
+        balls[i].draw()
+        balls[i].update()
+    }
+    requestAnimationFrame(loop) //calls loop  
+}
+
+
+let start = () => {
+    startBtn.style.visibility = 'hidden'
+    createBall()
+    loop()
+    setInterval(totalTimer, 1000)
+    startBallTimer()
+}
+
+
+function getClickedBall(canvas, event) {
+    const rect = canvas.getBoundingClientRect() //return position relative to canvas viewport
+    const plus = 20
+    let xPlus = event.clientX + plus
+    let xMinus = event.clientX - plus
+    let yPlus = event.clientY + plus - 80
+    let yMinus = event.clientY - plus - 80
+
+    if (balls.length > 0) {
+        if (balls[0].x <= xPlus && balls[0].x >= xMinus && balls[0].y <= yPlus && balls[0].y >= yMinus) {
+            console.log(balls[0])
+            return removeBall()
         }
     }
 }
 
 
 
-
-
-
-const balls = []
-
-
-let createBall = () => {
-    const colors = ['red', 'blue', 'yellow', 'green', 'purple', 'gray']
-    let size = random(10, 20)
-    let ball = new Ball(
-        random(size, width - size),
-        random(size, height - size),
-        random(-7, 7),
-        random(-7, 7), colors[balls.length], size
-    )
-
-    balls.push(ball)
-}
-
-while (balls.length < 5) {
-    createBall()
-}
-
-function loop() {
-    // zera o quandro antes de criar o elemento atualizado
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.13)' //seta a cor do canvas em semi-transparente
-    ctx.fillRect(0, 0, width, height) // faz o retangulo definido acima
-
-    for (let i = 0; i < balls.length; i++) {
-        balls[i].draw()
-        balls[i].update()
-        balls[i].collisionDetect()
-    }
-    requestAnimationFrame(loop) //chama a função loop de forma repetitiva
-}
-
-
-let a = () => {
-    loop()
-}
-
-
-
-
-function getCursorPosition(canvas, event) {
-    const rect = canvas.getBoundingClientRect() //retorna a posicao relativa ao viewport
-    console.log(event.clientX)
-    // const xClick = event.clientX - rect.left
-    // const yClick = event.clientY - rect.top
-    // let xLeft = xClick - 20
-    // let xRight = xClick + 20
-    // let yUp = yClick - 20
-    // let yDown = yClick + 20
-    //alert("x: " + x + " y: " + y)
-}
-
 canvas.addEventListener('mousedown', function (e) {
-    getCursorPosition(canvas, e)
+    getClickedBall(canvas, e)
 })
+
+startBtn.addEventListener('click', start)
