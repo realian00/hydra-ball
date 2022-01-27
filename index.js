@@ -1,5 +1,3 @@
-
-
 // setup canvas
 
 const canvas = document.querySelector('canvas');
@@ -7,6 +5,19 @@ const ctx = canvas.getContext('2d'); //defino 'ctx' como a area do canvas que po
 const h4 = document.querySelector('h4')
 const container = document.querySelector('.gameWindow')
 const startBtn = document.querySelector('#start')
+const levelDiv = document.querySelector('#difficulty')
+const btnEasy = document.querySelector('#btnEasy')
+const btnMedium = document.querySelector('#btnMedium')
+const btnHard = document.querySelector('#btnHard')
+const endGame = document.querySelector('#endGame')
+
+let actual = {
+    ballQty: 6,
+    speed: 4,
+    totalTime: 21,
+    timeout: 4000,
+    start: false
+}
 
 const width = canvas.width = container.offsetWidth - 10;
 const height = canvas.height = window.innerHeight - h4.offsetHeight - 70;
@@ -65,14 +76,6 @@ Ball.prototype.update = function () {
 }
 
 
-
-const actual = {
-    ballQty: 6,
-    speed: 4,
-    totalTime: 21,
-    timeout: 4000
-}
-
 const balls = []
 const timeoutArray = []
 
@@ -89,7 +92,6 @@ let increaseBallQty = () => {
     startBallTimer()
 }
 
-
 let createBall = () => {
     if (balls.length === 0 && actual.ballQty > 0) {
         let size = random(10, 20)
@@ -97,8 +99,8 @@ let createBall = () => {
             random(size, width - size),
             random(size, height - size),
             random(actual.speed * -1, actual.speed),
-            random(actual.speed * -1, actual.speed), 
-            'red', 
+            random(actual.speed * -1, actual.speed),
+            'red',
             size
         )
         balls.push(ball)
@@ -151,9 +153,36 @@ let ballsLeft = () => {
 
     if (remainingBalls === 0) {
         removeBallTimer()
-        alert('winner')
+        winner()
     }
 }
+
+let winner = () => {
+    clearInterval(totalTimer)
+    removeBallTimer()
+    canvas.style.visibility = 'hidden'
+    endGame.innerText = `Congrats! You won with ${actual.totalTime} seconds of spare time!`
+    endGame.style.visibility = 'visible'
+    setTimeout(reStart, 5000)
+}
+
+let loser = () => {
+    clearInterval(totalTimer)
+    removeBallTimer()
+    canvas.style.visibility = 'hidden'
+    endGame.innerText = `You lost..... Maybe an easier level?`
+    endGame.style.visibility = 'visible'
+    setTimeout(reStart, 5000)
+}
+
+
+let reStart = () => {
+
+    location.reload()
+
+}
+
+
 
 
 
@@ -162,7 +191,9 @@ let totalTimer = () => {
         actual.totalTime--
         let timerText = document.querySelector('#timeleft')
         timerText.innerText = 'Actual: ' + actual.totalTime
-    } 
+    } else if (actual.totalTime === 0) {
+        loser()
+    }
 }
 
 totalTimer()
@@ -183,7 +214,7 @@ function loop() {
 
 
 let start = () => {
-    startBtn.style.visibility = 'hidden'
+    levelDiv.style.visibility = 'hidden'
     createBall()
     loop()
     setInterval(totalTimer, 1000)
@@ -214,3 +245,27 @@ canvas.addEventListener('mousedown', function (e) {
 })
 
 startBtn.addEventListener('click', start)
+
+btnEasy.addEventListener('click', () => {
+    actual.ballQty = 6
+    actual.speed = 4
+    actual.totalTime = 21
+    actual.timeout = 5000
+    ballsLeft()
+})
+
+btnMedium.addEventListener('click', () => {
+    actual.ballQty = 10
+    actual.speed = 6
+    actual.totalTime = 21
+    actual.timeout = 4000
+    ballsLeft()
+})
+
+btnHard.addEventListener('click', () => {
+    actual.ballQty = 14
+    actual.speed = 8
+    actual.totalTime = 21
+    actual.timeout = 3000
+    ballsLeft()
+})
