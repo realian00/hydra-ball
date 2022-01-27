@@ -5,38 +5,49 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sedgwick+Ave&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
     <title>Document</title>
 </head>
 
 <body>
-    <div class="titleContainer">
-        <h2>Cut one head, two other shall take it´s place!</h2>
-        <h1>Hydra Ball</h1>
+    <div class="top">
+        <h4 id="ballqty">Current: </h4>
+        <h4 id="timeleft">Actual:</h4>
+    </div>
+    <div class="gameWindow">
+       
+
+    <div class="sign">
+      <span class="fast-flicker">H</span>ydr<span class="flicker">a</span>B<span class="flicker">a</span>ll
     </div>
 
-    <div id="score"></div>
 
-    <div id="difficulty">
-        <h3>Select your level:</h3>
-        <button id="btnEasy">Easy</button>
-        <button id="btnMedium">Medium</button>
-        <button id="btnHard">Hard</button>
+        <canvas></canvas>
+        <div id="endGame">endgame</div>
+
+        <div id="difficulty">
+            <h3>Select your level:</h3>
+            <button id="btnEasy" class="buttons">Easy</button>
+            <button id="btnMedium" class="buttons">Medium</button>
+            <button id="btnHard" class="buttons">Hard</button>
+            <div>
+                <button id="start" class="buttons">Start</button>
+                <p></p>
+            </div>
+        </div>
+
+        
+
+
+
     </div>
 
-    <div id="player">
-        <form action="">
-            <input id="user" type="text">
-        </form>
-    </div>
-
-    <div class="bottom">
-        <div class="circle"></div>
-
-    </div>
-    
-
-    <script src="script.js"></script>
+    <script src="index.js"></script>
 </body>
 
 </html>
